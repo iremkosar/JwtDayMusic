@@ -24,9 +24,14 @@ namespace JwtDayMusic.WebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData=JsonConvert.SerializeObject(loginDto);
             StringContent stringContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var responseMessage = await client.PostAsync("https://localhost:7180/api/Login", stringContent);
+            var responseMessage = await client.PostAsync("https://localhost:7180/api/Login", stringContent);          
 
-            var token=await responseMessage.Content.ReadAsStringAsync();
+            var responseJson=await responseMessage.Content.ReadAsStringAsync();
+            var tokenResponse = JsonConvert.DeserializeObject<ResponseTokenDto>(responseJson);
+            string token = tokenResponse.Token;
+
+            HttpContext.Session.SetString("JwtToken", token);
+
             return View();
         }
 

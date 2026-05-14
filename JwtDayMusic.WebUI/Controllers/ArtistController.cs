@@ -15,12 +15,12 @@ namespace JwtDayMusic.WebUI.Controllers
         }
 
         public async Task<IActionResult> ArtistList()
-        { 
-            var client=_httpClientFactory.CreateClient();
-            var response = await client.GetAsync("https://localhost:7180/api/Artist");
-            var jsonData=await response.Content.ReadAsStringAsync();
-            var values=JsonConvert.DeserializeObject<List<ResultArtistDto>>(jsonData);
-            return View(values);
+        {            
+             var client = _httpClientFactory.CreateClient();
+             var response = await client.GetAsync("https://localhost:7180/api/Artist");
+             var jsonData = await response.Content.ReadAsStringAsync();
+             var values = JsonConvert.DeserializeObject<List<ResultArtistDto>>(jsonData);
+             return View(values);               
         }
     }
 }
