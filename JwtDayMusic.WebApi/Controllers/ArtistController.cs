@@ -1,6 +1,6 @@
 ﻿using JwtDayMusic.WebApi.Dtos;
 using JwtDayMusic.WebApi.Services.ArtistServices;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JwtDayMusic.WebApi.Controllers
@@ -16,6 +16,7 @@ namespace JwtDayMusic.WebApi.Controllers
             _artistService = artistService;
         }
         [HttpGet]
+        [Authorize(Roles ="Gold")]
         public async Task<IActionResult> ArtistList()
         {
             var values=await _artistService.GetAllArtists();
