@@ -10,7 +10,9 @@
 
             public string Bio { get; set; }
 
-            public long MonthlyListeners { get; set; }
+           public string Genres { get; set; } 
+
+           public long MonthlyListeners { get; set; }
 
             public bool IsVerified { get; set; }
 

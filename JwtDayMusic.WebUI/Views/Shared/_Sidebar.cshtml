@@ -1,0 +1,60 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+
+    bool IsActive(string controllerName) =>
+        string.Equals(currentController, controllerName, StringComparison.OrdinalIgnoreCase);
+}
+
+<aside class="sidebar">
+    <div>
+        <a asp-controller="Home" asp-action="Index" class="sidebar-brand">
+            <span class="sidebar-brand-mark"><i class="bi bi-soundwave"></i></span>
+            <span class="sidebar-brand-text">Cadence</span>
+        </a>
+
+        <nav class="sidebar-nav">
+            <a asp-controller="Home" asp-action="Index" class="sidebar-link @(IsActive("Home") ? "active" : "")">
+                <i class="bi bi-house"></i> Home
+            </a>
+            <a asp-controller="Artist" asp-action="ArtistList" class="sidebar-link @(IsActive("Artist") && ViewContext.RouteData.Values["action"]?.ToString() != "Following" ? "active" : "")">
+                <i class="bi bi-mic"></i> Artists
+            </a>
+            <a asp-controller="Song" asp-action="Index" class="sidebar-link @(IsActive("Song") ? "active" : "")">
+                <i class="bi bi-music-note-beamed"></i> Songs
+            </a>
+            <a asp-controller="Genre" asp-action="Index" class="sidebar-link @(IsActive("Genre") ? "active" : "")">
+                <i class="bi bi-tags"></i> Genres
+            </a>
+            <a asp-controller="Album" asp-action="Index" class="sidebar-link">
+                <i class="bi bi-disc"></i> Albums
+            </a>
+            <a asp-controller="Playlist" asp-action="Index" class="sidebar-link">
+                <i class="bi bi-collection-play"></i> Playlists
+            </a>
+
+            <p class="sidebar-section-label">Library</p>
+
+            <a asp-controller="Favorite" asp-action="Index" class="sidebar-link">
+                <i class="bi bi-heart"></i> Favorites
+            </a>
+            <a asp-controller="Artist" asp-action="Following" class="sidebar-link @(IsActive("Artist") && ViewContext.RouteData.Values["action"]?.ToString() == "Following" ? "active" : "")">
+                <i class="bi bi-person-check"></i> Takip Ettiklerim
+            </a>
+            <a asp-controller="History" asp-action="Index" class="sidebar-link">
+                <i class="bi bi-clock-history"></i> Recently Played
+            </a>
+            <a asp-controller="Membership" asp-action="Index" class="sidebar-link">
+                <i class="bi bi-gem"></i> Premium
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-footer">
+        <a asp-controller="Settings" asp-action="Index" class="sidebar-link">
+            <i class="bi bi-gear"></i> Settings
+        </a>
+        <a asp-controller="Login" asp-action="Logout" class="sidebar-link">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </div>
+</aside>

@@ -1,0 +1,36 @@
+@{
+    var pageTitle = ViewData["PageTitle"]?.ToString() ?? "Music Library";
+    var pageSubtitle = ViewData["PageSubtitle"]?.ToString() ?? "Discover and enjoy your favorite music.";
+}
+
+<header class="top-navbar">
+    <div class="d-flex align-items-start gap-3">
+        <button class="icon-btn sidebar-toggle" type="button" data-sidebar-toggle aria-label="Open menu">
+            <i class="bi bi-list"></i>
+        </button>
+        <div>
+            <h1 class="page-title">@pageTitle</h1>
+            <p class="page-subtitle mb-0">@pageSubtitle</p>
+        </div>
+    </div>
+
+    <div class="top-navbar-actions">
+        <div class="search-box d-none d-md-flex">
+            <i class="bi bi-search"></i>
+            <input type="search" placeholder="Search songs, artists..." data-song-search aria-label="Search songs and artists" />
+        </div>
+
+        <button class="icon-btn" type="button" aria-label="Notifications">
+            <i class="bi bi-bell"></i>
+            <span class="notif-dot"></span>
+        </button>
+
+        <div class="profile-cluster">
+            <div class="profile-avatar">MR</div>
+            <div class="profile-meta">
+                <span class="profile-name">Maya Reyes</span>
+                <span class="badge-premium"><i class="bi bi-star-fill"></i> Premium</span>
+            </div>
+        </div>
+    </div>
+</header>

@@ -2,9 +2,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpClient();
-builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache(); // <-- EKLENDÝ (Session için gerekli)
+builder.Services.AddSession(options =>        // <-- opsiyonel ayarlarla
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -13,7 +18,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -21,6 +25,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();        // <-- EKLENDÝ: UseRouting'den sonra, UseAuthorization'dan önce
 
 app.UseAuthorization();
 

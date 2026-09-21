@@ -1,0 +1,82 @@
+﻿@model JwtDayMusic.WebUI.Models.ArtistDetailsViewModel
+
+@{
+    var artist = Model.Artist;
+    ViewData["Title"] = artist?.Name ?? "Artist";
+    ViewData["PageTitle"] = artist?.Name ?? "Artist";
+    ViewData["PageSubtitle"] = "All songs from this artist.";
+    Layout = "_Layout";
+}
+
+@if (artist != null)
+{
+    <section class="artist-hero">
+        <img src="@artist.ImageUrl" alt="@artist.Name" class="artist-hero-cover" />
+        <div class="artist-hero-info">
+            <p class="artist-hero-eyebrow mb-0">
+                Artist
+                @if (artist.IsVerified)
+                {
+                    <i class="bi bi-patch-check-fill artist-verified"></i>
+                }
+            </p>
+            <h2 class="artist-hero-name mb-0">@artist.Name</h2>
+            <p class="artist-hero-meta mb-0">@artist.MonthlyListeners.ToString("N0") monthly listeners</p>
+            @if (!string.IsNullOrEmpty(artist.Bio))
+            {
+                <p class="artist-hero-bio mb-0">@artist.Bio</p>
+            }
+        </div>
+    </section>
+}
+
+<h3 class="section-heading">Songs</h3>
+
+@if (Model.Songs != null && Model.Songs.Any())
+{
+    <div class="song-grid">
+        @foreach (var song in Model.Songs)
+        {
+            <article class="song-card"
+                     data-song-card
+                     data-song-id="@song.SongId"
+                     data-category="@song.Category?.ToLowerInvariant()"
+                     data-badge="@song.Badge?.ToLowerInvariant()"
+                     data-title="@song.Title"
+                     data-artist="@song.ArtistName"
+                     data-cover="@song.CoverImageUrl"
+                     data-duration-seconds="@((int)song.Duration.TotalSeconds)">
+
+                <div class="song-cover" style="background-image:url('@song.CoverImageUrl')">
+                    <img src="@song.CoverImageUrl" alt="@song.Title cover" loading="lazy" />
+
+                    @if (!string.IsNullOrEmpty(song.Badge))
+                    {
+                        <span class="song-badge badge-@song.Badge.ToLowerInvariant()">@song.Badge</span>
+                    }
+
+                    <button type="button" class="song-fav-btn" data-fav-btn aria-label="Add to favorites">
+                        <i class="bi bi-heart"></i>
+                    </button>
+
+                    <button type="button" class="song-play-btn" data-play-song aria-label="Play @song.Title">
+                        <i class="bi bi-play-fill"></i>
+                    </button>
+                </div>
+
+                <div class="song-info">
+                    <p class="song-title mb-0">@song.Title</p>
+                    <p class="song-artist mb-0">@song.ArtistName</p>
+                    <p class="song-duration mb-0">@song.Duration.ToString(@"m\:ss")</p>
+                </div>
+            </article>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-music-note-list"></i>
+        <p class="mb-0">This artist has no songs yet.</p>
+    </div>
+}

@@ -10,6 +10,8 @@ namespace JwtDayMusic.WebApi.Mapping
         { 
             CreateMap<Artist,ResultArtistDto>().ReverseMap();
             CreateMap<Artist,CreateArtistDto>().ReverseMap();
+            CreateMap<Song, ResultSongDto>()
+                .ForMember(dest => dest.ArtistName, opt => opt.MapFrom(src => src.Artist.Name));
         }
     }
 }

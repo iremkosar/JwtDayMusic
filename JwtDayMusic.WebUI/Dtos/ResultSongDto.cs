@@ -1,25 +1,16 @@
-﻿namespace JwtDayMusic.WebApi.Entities
+﻿namespace JwtDayMusic.WebUI.Dtos
 {
-    public class Song
+    public class ResultSongDto
     {
         public int SongId { get; set; }
-
         public string Title { get; set; }
-
         public string CoverImageUrl { get; set; }
-
-        public string AudioUrl { get; set; }
-
         public TimeSpan Duration { get; set; }
-
         public long PlayCount { get; set; }
-
+        public string RequiredPackage { get; set; }
+        public string Genre { get; set; }
         public DateTime ReleaseDate { get; set; }
-        public string RequiredPackage { get; set; } // "Basic", "Gold", "Premium", "Elit"
-        public string Genre { get; set; } = "Pop";
-
         public int ArtistId { get; set; }
-    
-        public Artist Artist { get; set; }
+        public string ArtistName { get; set; }
     }
 }

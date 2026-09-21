@@ -15,10 +15,17 @@ namespace JwtDayMusic.WebApi.Controllers
         {
             _loginService = loginService;
         }
+
         [HttpPost]
         public async Task<IActionResult> UserLogin(LoginDto loginDto)
         {
-            var token=await _loginService.LoginAsync(loginDto);
+            var token = await _loginService.LoginAsync(loginDto);
+
+            if (string.IsNullOrEmpty(token) || token == "hata")
+            {
+                return Unauthorized(new { message = "Kullanıcı adı veya şifre hatalı." });
+            }
+
             return Ok(new { token });
         }
     }

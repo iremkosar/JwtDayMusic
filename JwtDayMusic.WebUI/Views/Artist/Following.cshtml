@@ -1,0 +1,54 @@
+﻿@model IEnumerable<JwtDayMusic.WebUI.Dtos.ResultArtistDto>
+
+@{
+    ViewData["Title"] = "Takip Ettiklerim";
+    ViewData["PageTitle"] = "Takip Ettiklerim";
+    ViewData["PageSubtitle"] = $"{Model?.Count() ?? 0} sanatçı takip ediyorsunuz";
+    Layout = "_Layout";
+
+    var turkishCulture = new System.Globalization.CultureInfo("tr-TR");
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="artist-grid" data-following-page>
+        @foreach (var artist in Model)
+        {
+            <div class="artist-card-v2" data-artist-card data-artist-id="@artist.ArtistId">
+
+                <a asp-action="ArtistDetails" asp-route-id="@artist.ArtistId" class="artist-card-v2-cover">
+                    <img src="@artist.ImageUrl" alt="@artist.Name" loading="lazy" />
+                </a>
+
+                <div class="artist-card-v2-body">
+                    <a asp-action="ArtistDetails" asp-route-id="@artist.ArtistId" class="artist-card-v2-name">
+                        @artist.Name
+                        @if (artist.IsVerified)
+                        {
+                            <i class="bi bi-patch-check-fill artist-verified"></i>
+                        }
+                    </a>
+                    <p class="artist-card-v2-genres mb-0">@artist.Genres</p>
+
+                    <div class="artist-card-v2-footer">
+                        <span class="artist-card-v2-listeners">
+                            <i class="bi bi-person-fill"></i>
+                            @artist.MonthlyListeners.ToString("N0", turkishCulture)
+                        </span>
+                        <button type="button" class="follow-btn is-following" data-follow-btn>
+                            <span class="follow-btn-label">Takip Ediliyor</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-person-heart"></i>
+        <p class="mb-0">Henüz kimseyi takip etmiyorsunuz.</p>
+        <p class="mb-0"><a asp-action="ArtistList" asp-controller="Artist" class="back-link" style="display:inline-flex;margin-top:0.75rem;">Sanatçıları keşfedin</a></p>
+    </div>
+}
