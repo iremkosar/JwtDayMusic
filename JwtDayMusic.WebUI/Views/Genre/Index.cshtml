@@ -1,0 +1,31 @@
+﻿@model IEnumerable<JwtDayMusic.WebUI.Dtos.GenreSummaryDto>
+
+@{
+    ViewData["Title"] = "Genres";
+    ViewData["PageTitle"] = "Genres";
+    ViewData["PageSubtitle"] = "Browse music by genre.";
+    Layout = "_Layout";
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="genre-grid">
+        @foreach (var genre in Model)
+        {
+            <a class="genre-card" asp-action="GenreSongs" asp-route-genre="@genre.Genre">
+                <div class="genre-cover" style="background-image:url('@genre.CoverImageUrl')">
+                    <div class="genre-overlay"></div>
+                    <span class="genre-name">@genre.Genre</span>
+                </div>
+                <p class="genre-count mb-0">@genre.SongCount song@(genre.SongCount == 1 ? "" : "s")</p>
+            </a>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-music-note-beamed"></i>
+        <p class="mb-0">No genres found yet.</p>
+    </div>
+}

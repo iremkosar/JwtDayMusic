@@ -1,5 +1,3 @@
-using JwtDayMusic.WebUI.Dtos;
-
 namespace JwtDayMusic.WebUI.Models
 {
     public class SongViewModel
@@ -13,6 +11,7 @@ namespace JwtDayMusic.WebUI.Models
 
         // "Gold", "Premium", "New", "Trending", or null
         public string Badge { get; set; }
-       
+
+        public bool IsFavorited { get; set; }
     }
 }

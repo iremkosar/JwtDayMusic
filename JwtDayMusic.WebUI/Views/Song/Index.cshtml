@@ -1,6 +1,5 @@
 @model IEnumerable<JwtDayMusic.WebUI.Models.SongViewModel>
 
-
 @{
     ViewData["Title"] = "Music Library";
     ViewData["PageTitle"] = "Music Library";
@@ -8,7 +7,6 @@
     Layout = "_Layout";
 
     var categories = new[] { "All", "Pop", "Rock", "Hip-Hop", "Electronic", "Jazz", "Gold", "Premium" };
-
 }
 
 <section class="category-filters">
@@ -16,8 +14,8 @@
     {
         var value = category.ToLowerInvariant();
         <button type="button"
-        class="category-pill @(category == "All" ? "active" : "")"
-        data-category-pill="@value">
+                class="category-pill @(category == "All" ? "active" : "")"
+                data-category-pill="@value">
             @category
         </button>
     }
@@ -28,43 +26,7 @@
     <div class="song-grid">
         @foreach (var song in Model)
         {
-            <article class="song-card"
-            data-song-card
-            data-song-id="@song.SongId"
-            data-category="@song.Category?.ToLowerInvariant()"
-            data-badge="@song.Badge?.ToLowerInvariant()"
-            data-title="@song.Title"
-            data-artist="@song.ArtistName"
-            data-cover="@song.CoverImageUrl"
-            data-duration-seconds="@((int)song.Duration.TotalSeconds)">
-
-                <div class="song-cover" style="background-image:url('@song.CoverImageUrl')">
-                    <img src="@song.CoverImageUrl" alt="@song.Title cover" loading="lazy" />
-
-                    @if (!string.IsNullOrEmpty(song.Badge))
-                    {
-                        <span class="song-badge badge-@song.Badge.ToLowerInvariant()">@song.Badge</span>
-                    }
-                    @foreach(var artist in Model)
-                    {
-                        <div>@artist.</div>
-                    }
-                   
-
-                    <button type="button" class="song-fav-btn" data-fav-btn aria-label="Add to favorites">
-                        <i class="bi bi-heart"></i>
-                    </button>                  
-                    <button type="button" class="song-play-btn" data-play-song aria-label="Play @song.Title">
-                        <i class="bi bi-play-fill"></i>
-                    </button>
-                </div>
-
-                <div class="song-info">
-                    <p class="song-title mb-0">@song.Title</p>
-                    <p class="song-artist mb-0">@song.ArtistName</p>
-                    <p class="song-duration mb-0">@song.Duration.ToString(@"m\:ss")</p>
-                </div>
-            </article>
+            <partial name="_SongCard" model="song" />
         }
     </div>
 }

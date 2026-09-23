@@ -25,11 +25,24 @@ namespace JwtDayMusic.WebApi.Controllers
             return Ok(songs);
         }
 
-        // Belirli bir sanatçıya ait tüm şarkılar (Artist detay sayfası için)
         [HttpGet("by-artist/{artistId}")]
         public async Task<IActionResult> GetByArtist(int artistId)
         {
             var songs = await _songService.GetByArtistIdAsync(artistId);
+            return Ok(songs);
+        }
+
+        [HttpGet("genres")]
+        public async Task<IActionResult> GetGenres()
+        {
+            var genres = await _songService.GetGenreSummaryAsync();
+            return Ok(genres);
+        }
+
+        [HttpGet("by-genre/{genre}")]
+        public async Task<IActionResult> GetByGenre(string genre)
+        {
+            var songs = await _songService.GetByGenreAsync(genre);
             return Ok(songs);
         }
 
@@ -56,6 +69,45 @@ namespace JwtDayMusic.WebApi.Controllers
             };
 
             return Ok(result);
+        }
+
+        // Favori ekle/çıkar (toggle) - login zorunlu
+        [HttpPost("{id}/toggle-favorite")]
+        [Authorize]
+        public async Task<IActionResult> ToggleFavorite(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var isNowFavorited = await _songService.ToggleFavoriteAsync(userId, id);
+            return Ok(new { favorited = isNowFavorited });
+        }
+
+        // Giriş yapmış kullanıcının favori şarkı ID'leri
+        [HttpGet("favorites")]
+        [Authorize]
+        public async Task<IActionResult> GetFavoriteIds()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var ids = await _songService.GetFavoriteSongIdsAsync(userId);
+            return Ok(ids);
+        }
+
+        // Giriş yapmış kullanıcının favori şarkılarının tam bilgisi (Beğendiklerim sayfası için)
+        [HttpGet("favorited")]
+        [Authorize]
+        public async Task<IActionResult> GetFavoritedSongs()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var songs = await _songService.GetFavoritedSongsAsync(userId);
+            return Ok(songs);
         }
     }
 }

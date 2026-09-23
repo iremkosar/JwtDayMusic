@@ -20,16 +20,6 @@ namespace JwtDayMusic.WebUI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-
-            // Şarkı listesi herkese açık, ama kullanıcı login olmuşsa
-            // ileride "favorilerim" gibi kişisel veriler için token'ı yine de ekliyoruz
-            var token = _httpContextAccessor.HttpContext.Session.GetString("JwtToken");
-            if (!string.IsNullOrEmpty(token))
-            {
-                token = token.Trim().Replace("\"", "");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
             var response = await client.GetAsync("https://localhost:7180/api/Song");
 
             if (!response.IsSuccessStatusCode)
@@ -40,7 +30,8 @@ namespace JwtDayMusic.WebUI.Controllers
             var jsonData = await response.Content.ReadAsStringAsync();
             var songs = JsonConvert.DeserializeObject<List<ResultSongDto>>(jsonData) ?? new List<ResultSongDto>();
 
-            var viewModel = songs.Select(MapToViewModel).ToList();
+            var favoriteIds = await GetFavoriteIdsAsync();
+            var viewModel = songs.Select(dto => MapToViewModel(dto, favoriteIds)).ToList();
 
             return View(viewModel);
         }
@@ -51,37 +42,77 @@ namespace JwtDayMusic.WebUI.Controllers
             var token = _httpContextAccessor.HttpContext.Session.GetString("JwtToken");
             token = token?.Trim().Replace("\"", "");
 
-            System.Diagnostics.Debug.WriteLine("=== PLAY ACTION ÇALIŞTI ===");
-            System.Diagnostics.Debug.WriteLine("SONG ID: " + songId);
-            System.Diagnostics.Debug.WriteLine("TOKEN VAR MI: " + !string.IsNullOrEmpty(token));
-            System.Diagnostics.Debug.WriteLine("TOKEN: " + token);
-
             if (string.IsNullOrEmpty(token))
             {
                 return Json(new { success = false, message = "Şarkı oynatmak için giriş yapmalısınız." });
             }
+
             var client = _httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await client.GetAsync($"https://localhost:7180/api/Song/play/{songId}");
 
-            System.Diagnostics.Debug.WriteLine("API'DEN DÖNEN STATUS CODE: " + response.StatusCode);
+            var response = await client.GetAsync($"https://localhost:7180/api/Song/play/{songId}");
 
             if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
                 return Json(new { success = false, message = "Bu şarkıya erişim için üyeliğinizi yükseltmeniz gerekiyor." });
             }
+
             if (!response.IsSuccessStatusCode)
             {
-                var errorBody = await response.Content.ReadAsStringAsync();
-                System.Diagnostics.Debug.WriteLine("HATA BODY: " + errorBody);
                 return Json(new { success = false, message = "Şarkı oynatılamadı." });
             }
+
             var jsonData = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<PlaySongResultDto>(jsonData);
+
             return Json(new { success = true, audioUrl = result?.AudioUrl, title = result?.Title });
         }
 
-        private static SongViewModel MapToViewModel(ResultSongDto dto)
+        // Kart üzerindeki kalp butonundan AJAX ile çağrılır
+        [HttpPost]
+        public async Task<IActionResult> ToggleFavorite(int songId)
+        {
+            var token = _httpContextAccessor.HttpContext.Session.GetString("JwtToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return Json(new { success = false, message = "Favorilere eklemek için giriş yapmalısınız." });
+            }
+
+            token = token.Trim().Replace("\"", "");
+            var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.PostAsync($"https://localhost:7180/api/Song/{songId}/toggle-favorite", null);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return Json(new { success = false, message = "İşlem gerçekleştirilemedi." });
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<ToggleFavoriteResultDto>(json);
+
+            return Json(new { success = true, favorited = result?.Favorited ?? false });
+        }
+
+        private async Task<HashSet<int>> GetFavoriteIdsAsync()
+        {
+            var token = _httpContextAccessor.HttpContext.Session.GetString("JwtToken");
+            if (string.IsNullOrEmpty(token)) return new HashSet<int>();
+
+            token = token.Trim().Replace("\"", "");
+            var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.GetAsync("https://localhost:7180/api/Song/favorites");
+            if (!response.IsSuccessStatusCode) return new HashSet<int>();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var ids = JsonConvert.DeserializeObject<List<int>>(json) ?? new List<int>();
+            return ids.ToHashSet();
+        }
+
+        private static SongViewModel MapToViewModel(ResultSongDto dto, HashSet<int> favoriteIds)
         {
             return new SongViewModel
             {
@@ -91,30 +122,9 @@ namespace JwtDayMusic.WebUI.Controllers
                 CoverImageUrl = dto.CoverImageUrl,
                 Duration = dto.Duration,
                 Category = dto.Genre,
-                Badge = dto.RequiredPackage == "Basic" ? null : dto.RequiredPackage
-            }; 
+                Badge = dto.RequiredPackage == "Basic" ? null : dto.RequiredPackage,
+                IsFavorited = favoriteIds.Contains(dto.SongId)
+            };
         }
-        [HttpGet]
-        public async Task<IActionResult> WhoAmI()
-        {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("JwtToken");
-            var rawToken = token;
-            token = token?.Trim().Replace("\"", "");
-
-            var client = _httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            var response = await client.GetAsync("https://localhost:7180/api/Song/whoami");
-            var json = await response.Content.ReadAsStringAsync();
-
-            return Json(new
-            {
-                HasTokenInSession = !string.IsNullOrEmpty(rawToken),
-                TokenPreview = rawToken?.Substring(0, Math.Min(30, rawToken?.Length ?? 0)),
-                ApiStatusCode = (int)response.StatusCode,
-                ApiBody = json
-            });
-        }
-
     }
 }

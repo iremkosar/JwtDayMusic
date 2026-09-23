@@ -13,5 +13,8 @@ namespace JwtDayMusic.WebApi.Context
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Song> Songs { get; set; }
         public DbSet<ArtistFollow> ArtistFollows { get; set; }
+        public DbSet<SongFavorite> SongFavorites { get; set; }
+        public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<PlaylistSong> PlaylistSongs { get; set; }
     }
 }

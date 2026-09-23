@@ -1,0 +1,40 @@
+﻿@model JwtDayMusic.WebUI.Models.PlaylistDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+    ViewData["PageTitle"] = Model.Name;
+    ViewData["PageSubtitle"] = $"{Model.Songs.Count} şarkı";
+    Layout = "_Layout";
+}
+
+<div class="d-flex align-items-center justify-content-between" style="margin-bottom:1.5rem;flex-wrap:wrap;gap:0.75rem;">
+    <a asp-action="Index" asp-controller="Playlist" class="back-link mb-0">
+        <i class="bi bi-arrow-left"></i> Çalma Listelerim
+    </a>
+    <button type="button" class="follow-btn" data-delete-playlist="@Model.Id" style="border-color: rgba(239,68,68,0.4); color:#f37272;">
+        <i class="bi bi-trash"></i> Listeyi Sil
+    </button>
+</div>
+
+@if (Model.Songs != null && Model.Songs.Any())
+{
+    <div class="song-grid" data-playlist-page="@Model.Id">
+        @foreach (var song in Model.Songs)
+        {
+            <div class="playlist-song-wrap">
+                <partial name="_SongCard" model="song" />
+                <button type="button" class="playlist-remove-btn" data-remove-from-playlist="@song.SongId">
+                    <i class="bi bi-dash-circle"></i> Listeden Çıkar
+                </button>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-music-note-list"></i>
+        <p class="mb-0">Bu listede henüz şarkı yok.</p>
+        <p class="mb-0"><a asp-action="Index" asp-controller="Song" class="back-link" style="display:inline-flex;margin-top:0.75rem;">Şarkıları keşfedin</a></p>
+    </div>
+}

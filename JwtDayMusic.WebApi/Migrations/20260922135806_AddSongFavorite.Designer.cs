@@ -4,6 +4,7 @@ using JwtDayMusic.WebApi.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JwtDayMusic.WebApi.Migrations
 {
     [DbContext(typeof(JwtContext))]
-    partial class JwtContextModelSnapshot : ModelSnapshot
+    [Migration("20260922135806_AddSongFavorite")]
+    partial class AddSongFavorite
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,56 +161,6 @@ namespace JwtDayMusic.WebApi.Migrations
                     b.HasIndex("ArtistId");
 
                     b.ToTable("ArtistFollows");
-                });
-
-            modelBuilder.Entity("JwtDayMusic.WebApi.Entities.Playlist", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Playlists");
-                });
-
-            modelBuilder.Entity("JwtDayMusic.WebApi.Entities.PlaylistSong", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("AddedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PlaylistId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SongId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlaylistId");
-
-                    b.HasIndex("SongId");
-
-                    b.ToTable("PlaylistSongs");
                 });
 
             modelBuilder.Entity("JwtDayMusic.WebApi.Entities.Song", b =>
@@ -427,25 +379,6 @@ namespace JwtDayMusic.WebApi.Migrations
                     b.Navigation("Artist");
                 });
 
-            modelBuilder.Entity("JwtDayMusic.WebApi.Entities.PlaylistSong", b =>
-                {
-                    b.HasOne("JwtDayMusic.WebApi.Entities.Playlist", "Playlist")
-                        .WithMany("PlaylistSongs")
-                        .HasForeignKey("PlaylistId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JwtDayMusic.WebApi.Entities.Song", "Song")
-                        .WithMany()
-                        .HasForeignKey("SongId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Playlist");
-
-                    b.Navigation("Song");
-                });
-
             modelBuilder.Entity("JwtDayMusic.WebApi.Entities.Song", b =>
                 {
                     b.HasOne("JwtDayMusic.WebApi.Entities.Artist", "Artist")
@@ -522,11 +455,6 @@ namespace JwtDayMusic.WebApi.Migrations
             modelBuilder.Entity("JwtDayMusic.WebApi.Entities.Artist", b =>
                 {
                     b.Navigation("Songs");
-                });
-
-            modelBuilder.Entity("JwtDayMusic.WebApi.Entities.Playlist", b =>
-                {
-                    b.Navigation("PlaylistSongs");
                 });
 #pragma warning restore 612, 618
         }

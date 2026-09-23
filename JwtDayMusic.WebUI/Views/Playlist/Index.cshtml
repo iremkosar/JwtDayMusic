@@ -1,0 +1,38 @@
+﻿@model List<JwtDayMusic.WebUI.Dtos.ResultPlaylistDto>
+
+@{
+    ViewData["Title"] = "Playlists";
+    ViewData["PageTitle"] = "Çalma Listelerim";
+    ViewData["PageSubtitle"] = $"{Model?.Count ?? 0} çalma listeniz var";
+    Layout = "_Layout";
+}
+
+<div class="playlist-grid">
+    <button type="button" class="playlist-card playlist-card-new" data-create-playlist>
+        <i class="bi bi-plus-circle"></i>
+        <span>Yeni Calma Listesi</span>
+    </button>
+
+    @if (Model != null)
+    {
+        @foreach (var playlist in Model)
+        {
+            <a asp-action="Details" asp-route-id="@playlist.Id" class="playlist-card" data-playlist-card="@playlist.Id">
+                <div class="playlist-card-cover">
+                    @if (!string.IsNullOrEmpty(playlist.CoverImageUrl))
+                    {
+                        <img src="@playlist.CoverImageUrl" alt="@playlist.Name" loading="lazy" />
+                    }
+                    else
+                    {
+                        <div class="playlist-card-cover-placeholder">
+                            <i class="bi bi-music-note-list"></i>
+                        </div>
+                    }
+                </div>
+                <p class="playlist-card-name mb-0">@playlist.Name</p>
+                <p class="playlist-card-count mb-0">@playlist.SongCount şarkı</p>
+            </a>
+        }
+    }
+</div>

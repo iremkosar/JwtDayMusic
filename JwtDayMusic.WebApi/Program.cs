@@ -2,6 +2,7 @@ using JwtDayMusic.WebApi.Context;
 using JwtDayMusic.WebApi.Entities;
 using JwtDayMusic.WebApi.Services.ArtistServices;
 using JwtDayMusic.WebApi.Services.LoginServices;
+using JwtDayMusic.WebApi.Services.PlaylistServices;
 using JwtDayMusic.WebApi.Services.RegisterServices;
 using JwtDayMusic.WebApi.Services.SongServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,6 +39,7 @@ builder.Services.AddScoped<IRegisterService,RegisterService>();
 builder.Services.AddScoped<ILoginService,LoginService>();
 builder.Services.AddScoped<IArtistService,ArtistService>();
 builder.Services.AddScoped<ISongService, SongService>();
+builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 

@@ -1,0 +1,26 @@
+@model List<JwtDayMusic.WebUI.Models.SongViewModel>
+
+@{
+    ViewData["Title"] = "Beğendiklerim";
+    ViewData["PageTitle"] = "Beğendiklerim";
+    ViewData["PageSubtitle"] = $"{Model?.Count ?? 0} şarkı beğendiniz";
+    Layout = "_Layout";
+}
+
+@if (Model != null && Model.Any())
+{
+    <div class="song-grid" data-favorites-page>
+        @foreach (var song in Model)
+        {
+            <partial name="_SongCard" model="song" />
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-heart"></i>
+        <p class="mb-0">Henüz hiç şarkı beğenmediniz.</p>
+        <p class="mb-0"><a asp-action="Index" asp-controller="Song" class="back-link" style="display:inline-flex;margin-top:0.75rem;">Şarkıları keşfedin</a></p>
+    </div>
+}

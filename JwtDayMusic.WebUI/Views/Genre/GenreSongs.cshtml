@@ -1,0 +1,30 @@
+@model List<JwtDayMusic.WebUI.Models.SongViewModel>
+
+@{
+    var genreName = ViewBag.GenreName as string ?? "Genre";
+    ViewData["Title"] = genreName;
+    ViewData["PageTitle"] = genreName;
+    ViewData["PageSubtitle"] = "Songs in this genre.";
+    Layout = "_Layout";
+}
+
+<a asp-action="Index" asp-controller="Genre" class="back-link">
+    <i class="bi bi-arrow-left"></i> All genres
+</a>
+
+@if (Model != null && Model.Any())
+{
+    <div class="song-grid">
+        @foreach (var song in Model)
+        {
+            <partial name="_SongCard" model="song" />
+        }
+    </div>
+}
+else
+{
+    <div class="empty-state">
+        <i class="bi bi-music-note-list"></i>
+        <p class="mb-0">No songs in this genre yet.</p>
+    </div>
+}

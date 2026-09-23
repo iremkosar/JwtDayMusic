@@ -28,13 +28,13 @@
             <a asp-controller="Album" asp-action="Index" class="sidebar-link">
                 <i class="bi bi-disc"></i> Albums
             </a>
-            <a asp-controller="Playlist" asp-action="Index" class="sidebar-link">
+            <a asp-controller="Playlist" asp-action="Index" class="sidebar-link @(IsActive("Playlist") ? "active" : "")">
                 <i class="bi bi-collection-play"></i> Playlists
             </a>
 
             <p class="sidebar-section-label">Library</p>
 
-            <a asp-controller="Favorite" asp-action="Index" class="sidebar-link">
+            <a asp-controller="Favorite" asp-action="Index" class="sidebar-link @(IsActive("Favorite") ? "active" : "")">
                 <i class="bi bi-heart"></i> Favorites
             </a>
             <a asp-controller="Artist" asp-action="Following" class="sidebar-link @(IsActive("Artist") && ViewContext.RouteData.Values["action"]?.ToString() == "Following" ? "active" : "")">
