@@ -161,6 +161,31 @@ namespace JwtDayMusic.WebApi.Migrations
                     b.ToTable("ArtistFollows");
                 });
 
+            modelBuilder.Entity("JwtDayMusic.WebApi.Entities.PlayHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("PlayedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SongId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SongId");
+
+                    b.ToTable("PlayHistories");
+                });
+
             modelBuilder.Entity("JwtDayMusic.WebApi.Entities.Playlist", b =>
                 {
                     b.Property<int>("Id")
@@ -425,6 +450,17 @@ namespace JwtDayMusic.WebApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Artist");
+                });
+
+            modelBuilder.Entity("JwtDayMusic.WebApi.Entities.PlayHistory", b =>
+                {
+                    b.HasOne("JwtDayMusic.WebApi.Entities.Song", "Song")
+                        .WithMany()
+                        .HasForeignKey("SongId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Song");
                 });
 
             modelBuilder.Entity("JwtDayMusic.WebApi.Entities.PlaylistSong", b =>

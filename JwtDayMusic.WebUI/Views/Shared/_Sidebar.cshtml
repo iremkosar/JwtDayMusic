@@ -40,8 +40,11 @@
             <a asp-controller="Artist" asp-action="Following" class="sidebar-link @(IsActive("Artist") && ViewContext.RouteData.Values["action"]?.ToString() == "Following" ? "active" : "")">
                 <i class="bi bi-person-check"></i> Takip Ettiklerim
             </a>
-            <a asp-controller="History" asp-action="Index" class="sidebar-link">
+            <a asp-controller="History" asp-action="Index" class="sidebar-link @(IsActive("History") && ViewContext.RouteData.Values["action"]?.ToString() != "Recommendations" ? "active" : "")">
                 <i class="bi bi-clock-history"></i> Recently Played
+            </a>
+            <a asp-controller="History" asp-action="Recommendations" class="sidebar-link @(IsActive("History") && ViewContext.RouteData.Values["action"]?.ToString() == "Recommendations" ? "active" : "")">
+                <i class="bi bi-stars"></i> Recommended
             </a>
             <a asp-controller="Membership" asp-action="Index" class="sidebar-link">
                 <i class="bi bi-gem"></i> Premium

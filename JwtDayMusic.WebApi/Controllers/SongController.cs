@@ -1,5 +1,6 @@
 ﻿using JwtDayMusic.WebApi.Dtos;
 using JwtDayMusic.WebApi.Helpers;
+using JwtDayMusic.WebApi.Services.RecommendationServices;
 using JwtDayMusic.WebApi.Services.SongServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace JwtDayMusic.WebApi.Controllers
     public class SongController : ControllerBase
     {
         private readonly ISongService _songService;
+        private readonly IRecommendationService _recommendationService;
 
-        public SongController(ISongService songService)
+        public SongController(ISongService songService, IRecommendationService recommendationService)
         {
             _songService = songService;
+            _recommendationService = recommendationService;
         }
 
         [HttpGet]
@@ -62,6 +65,13 @@ namespace JwtDayMusic.WebApi.Controllers
                 return StatusCode(403, "Bu şarkıya erişim için üyeliğinizi yükseltmeniz gerekiyor.");
             }
 
+            // Erişim onaylandı: dinleme geçmişine kaydet (ML.NET öneri motoru bunu kullanacak)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                await _recommendationService.RecordPlayAsync(userId, songId);
+            }
+
             var result = new PlaySongResultDto
             {
                 AudioUrl = song.AudioUrl,
@@ -71,7 +81,6 @@ namespace JwtDayMusic.WebApi.Controllers
             return Ok(result);
         }
 
-        // Favori ekle/çıkar (toggle) - login zorunlu
         [HttpPost("{id}/toggle-favorite")]
         [Authorize]
         public async Task<IActionResult> ToggleFavorite(int id)
@@ -84,7 +93,6 @@ namespace JwtDayMusic.WebApi.Controllers
             return Ok(new { favorited = isNowFavorited });
         }
 
-        // Giriş yapmış kullanıcının favori şarkı ID'leri
         [HttpGet("favorites")]
         [Authorize]
         public async Task<IActionResult> GetFavoriteIds()
@@ -97,7 +105,6 @@ namespace JwtDayMusic.WebApi.Controllers
             return Ok(ids);
         }
 
-        // Giriş yapmış kullanıcının favori şarkılarının tam bilgisi (Beğendiklerim sayfası için)
         [HttpGet("favorited")]
         [Authorize]
         public async Task<IActionResult> GetFavoritedSongs()
