@@ -54,11 +54,12 @@
         var searchInput = document.querySelector('[data-song-search]');
         var cards = document.querySelectorAll('[data-song-card]');
         var emptyState = document.querySelector('[data-empty-state]');
-        var activePill = document.querySelector('[data-category-pill].active');
 
         if (!searchInput) return;
 
         searchInput.addEventListener('input', function () {
+            // Aktif butonu yazarken tekrar okuyoruz, böylece baþka türe geçildiyse arama da ona göre çalýþýr
+            var activePill = document.querySelector('[data-category-pill].active');
             var category = activePill ? activePill.dataset.categoryPill : 'all';
             applyFilters(cards, emptyState, category, searchInput.value);
         });

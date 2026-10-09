@@ -103,13 +103,19 @@ a {
     border-right: 1px solid var(--line);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     padding: 1.75rem 1rem;
     position: sticky;
     top: 0;
     height: 100vh;
     transition: transform var(--dur) var(--ease);
     z-index: 40;
+}
+
+.sidebar-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 2px;
 }
 
 .sidebar-brand {
@@ -407,8 +413,8 @@ a {
 
 .song-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.4rem;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.1rem;
 }
 
 @media (max-width: 575.98px) {
@@ -466,17 +472,24 @@ a {
     transform: scale(1.08);
 }
 
-.song-badge {
+.song-card-top-left {
     position: absolute;
     top: 10px;
     left: 10px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.song-badge {
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     padding: 3px 9px;
     border-radius: var(--radius-sm);
     backdrop-filter: blur(6px);
-    z-index: 2;
 }
 
     .song-badge.badge-gold {
@@ -502,6 +515,17 @@ a {
         color: #f37272;
         border: 1px solid rgba(239, 68, 68, 0.3);
     }
+
+.song-rank {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    color: var(--gold);
+    font-weight: 800;
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(245, 197, 66, 0.25);
+}
 
 .song-fav-btn {
     position: absolute;
@@ -1358,3 +1382,153 @@ a {
         color: #f37272;
         border-color: rgba(239, 68, 68, 0.4);
     }
+
+/* ============ SIDEBAR: ACCOUNT WIDGET ============ */
+
+.sidebar-account {
+    margin-top: 1rem;
+    padding: 0.85rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.sidebar-account-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-account-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-account-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple), var(--cyan));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #0F0F10;
+    flex-shrink: 0;
+}
+
+.sidebar-account-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.sidebar-account-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============ ROLE BADGE (reused in sidebar + header) ============ */
+
+.role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    width: fit-content;
+}
+
+.role-badge-free,
+.role-badge-basic {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+}
+
+.role-badge-gold {
+    background: var(--gold-dim);
+    color: var(--gold);
+}
+
+.role-badge-premium {
+    background: var(--purple-dim);
+    color: var(--purple);
+}
+
+.role-badge-elit {
+    background: var(--cyan-dim);
+    color: var(--cyan);
+}
+
+.role-badge-admin {
+    background: rgba(239, 68, 68, 0.14);
+    color: #f37272;
+}
+
+/* ============ AI RECOMMENDATION BANNER ============ */
+
+.ai-banner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(135deg, rgba(245, 197, 66, 0.08), rgba(139, 92, 246, 0.08));
+    border: 1px solid rgba(245, 197, 66, 0.2);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.4rem;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+}
+
+.ai-banner-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-md);
+    background: var(--gold-dim);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.ai-banner-text {
+    flex: 1;
+    min-width: 220px;
+}
+
+.ai-banner-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.ai-banner-subtitle {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.ai-banner-badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    background: var(--gold-dim);
+    border: 1px solid rgba(245, 197, 66, 0.3);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    flex-shrink: 0;
+}

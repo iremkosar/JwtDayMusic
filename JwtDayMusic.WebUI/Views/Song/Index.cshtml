@@ -1,4 +1,5 @@
 @model IEnumerable<JwtDayMusic.WebUI.Models.SongViewModel>
+@using JwtDayMusic.WebUI.Models
 
 @{
     ViewData["Title"] = "Music Library";
@@ -6,25 +7,41 @@
     ViewData["PageSubtitle"] = "Discover and enjoy your favorite music.";
     Layout = "_Layout";
 
-    var categories = new[] { "All", "Pop", "Rock", "Hip-Hop", "Electronic", "Jazz", "Gold", "Premium" };
+    var songs = Model ?? Enumerable.Empty<SongViewModel>();
+
+    // Filtre butonlarý artýk veritabanýndaki gerçek verilerden üretiliyor:
+    // 1) Þarkýlarda geçen türler (alfabetik, büyük/küçük harf farký tek sayýlýr)
+    var genres = songs
+        .Where(s => !string.IsNullOrWhiteSpace(s.Category))
+        .Select(s => s.Category.Trim())
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(g => g, StringComparer.OrdinalIgnoreCase)
+        .ToList();
+
+    // 2) Üyelik paketi butonlarý, sadece o pakette en az bir þarký varsa gösterilir
+    var packages = new[] { "Gold", "Premium", "Elit" }
+        .Where(p => songs.Any(s => string.Equals(s.Badge, p, StringComparison.OrdinalIgnoreCase)))
+        .ToList();
 }
 
 <section class="category-filters">
-    @foreach (var category in categories)
+    <button type="button" class="category-pill active" data-category-pill="all">All</button>
+
+    @foreach (var genre in genres)
     {
-        var value = category.ToLowerInvariant();
-        <button type="button"
-                class="category-pill @(category == "All" ? "active" : "")"
-                data-category-pill="@value">
-            @category
-        </button>
+        <button type="button" class="category-pill" data-category-pill="@genre.ToLowerInvariant()">@genre</button>
+    }
+
+    @foreach (var package in packages)
+    {
+        <button type="button" class="category-pill" data-category-pill="@package.ToLowerInvariant()">@package</button>
     }
 </section>
 
-@if (Model != null && Model.Any())
+@if (songs.Any())
 {
     <div class="song-grid">
-        @foreach (var song in Model)
+        @foreach (var song in songs)
         {
             <partial name="_SongCard" model="song" />
         }
@@ -37,7 +54,7 @@
     <p class="mb-0">Try a different category or search term.</p>
 </div>
 
-@if (Model == null || !Model.Any())
+@if (!songs.Any())
 {
     <div class="empty-state">
         <i class="bi bi-music-note-list"></i>

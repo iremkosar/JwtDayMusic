@@ -58,7 +58,7 @@ namespace JwtDayMusic.WebUI.Controllers
                 var json = await response.Content.ReadAsStringAsync();
                 var dtos = JsonConvert.DeserializeObject<List<RecommendedSongDto>>(json) ?? new List<RecommendedSongDto>();
 
-                songs = dtos.Select(dto => new SongViewModel
+                songs = dtos.Select((dto, index) => new SongViewModel
                 {
                     SongId = dto.SongId,
                     Title = dto.Title,
@@ -66,7 +66,8 @@ namespace JwtDayMusic.WebUI.Controllers
                     CoverImageUrl = dto.CoverImageUrl,
                     Duration = dto.Duration,
                     Category = dto.Genre,
-                    Badge = dto.RequiredPackage == "Basic" ? null : dto.RequiredPackage
+                    Badge = dto.RequiredPackage == "Basic" ? null : dto.RequiredPackage,
+                    Rank = index + 1
                 }).ToList();
             }
 

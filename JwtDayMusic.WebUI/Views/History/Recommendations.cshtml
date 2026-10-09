@@ -2,10 +2,21 @@
 
 @{
     ViewData["Title"] = "Önerilenler";
-    ViewData["PageTitle"] = "Sizin İçin Önerilenler";
-    ViewData["PageSubtitle"] = "Dinleme geçmişinize göre beğenebileceğiniz şarkılar.";
+    ViewData["PageTitle"] = "Bunları da Sevebilirsiniz";
+    ViewData["PageSubtitle"] = "Dinleme geçmişiniz analiz edilerek sizin için seçildi.";
     Layout = "_Layout";
 }
+
+<div class="ai-banner">
+    <div class="ai-banner-icon">
+        <i class="bi bi-cpu"></i>
+    </div>
+    <div class="ai-banner-text">
+        <p class="ai-banner-title mb-0">ML.NET Yapay Zeka Analizi</p>
+        <p class="ai-banner-subtitle mb-0">Dinleme alışkanlıklarınız Matrix Factorization algoritmasıyla analiz edildi. Aşağıdaki öneriler size özel hesaplandı.</p>
+    </div>
+    <span class="ai-banner-badge">AI POWERED</span>
+</div>
 
 @if (Model != null && Model.Any())
 {

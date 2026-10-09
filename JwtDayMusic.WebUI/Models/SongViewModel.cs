@@ -13,5 +13,8 @@ namespace JwtDayMusic.WebUI.Models
         public string Badge { get; set; }
 
         public bool IsFavorited { get; set; }
+
+        // Sadece sýralý listelerde (örn. Önerilenler) kullanýlýr, #1, #2 gibi
+        public int? Rank { get; set; }
     }
 }

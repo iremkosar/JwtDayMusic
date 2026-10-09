@@ -1,6 +1,15 @@
+@inject IHttpContextAccessor HttpContextAccessor
+@using JwtDayMusic.WebUI.Helpers
+
 @{
     var pageTitle = ViewData["PageTitle"]?.ToString() ?? "Music Library";
     var pageSubtitle = ViewData["PageSubtitle"]?.ToString() ?? "Discover and enjoy your favorite music.";
+
+    var token = HttpContextAccessor.HttpContext?.Session.GetString("JwtToken");
+    var (displayName, roles) = JwtClaimsReader.Read(token);
+    var highestRole = JwtClaimsReader.GetHighestRole(roles);
+    var initials = JwtClaimsReader.GetInitials(displayName);
+    var roleBadgeClass = "role-badge-" + highestRole.ToLowerInvariant();
 }
 
 <header class="top-navbar">
@@ -26,10 +35,12 @@
         </button>
 
         <div class="profile-cluster">
-            <div class="profile-avatar">MR</div>
+            <div class="profile-avatar">@initials</div>
             <div class="profile-meta">
-                <span class="profile-name">Maya Reyes</span>
-                <span class="badge-premium"><i class="bi bi-star-fill"></i> Premium</span>
+                <span class="profile-name">@displayName</span>
+                <span class="role-badge @roleBadgeClass">
+                    <i class="bi bi-star-fill"></i> @highestRole
+                </span>
             </div>
         </div>
     </div>
